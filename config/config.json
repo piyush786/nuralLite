@@ -1,0 +1,16 @@
+{
+  "basepath" : "/home/piyush/Desktop/hapi",
+  "useMock": true,
+  "server":{
+    "host": "127.0.0.1",
+    "port" : 8090
+  },
+  "database": {
+          "host": "127.0.0.1",
+          "port": 3306,
+          "db": "test",
+          "username": "root",
+          "password": "",
+          "dbType": "mysql"
+  }
+}
