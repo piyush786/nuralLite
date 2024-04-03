@@ -29,7 +29,7 @@ async function login(req, res) {
   const users = db.collection("users");
 
 
-  const user = await users.findOne({ accessKey: accessKey, username: username, password: password  });
+  const user = await users.findOne({ accessKey: accessKey, username: username, password: password, role: role  });
   if (!user) {
     return res.json(error("Invalid User name of password"));
   }
