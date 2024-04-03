@@ -6,10 +6,14 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 async function login(req, res) {
-  const { accessKey, username, password } = req.body;
+  const { accessKey, username, password, role } = req.body;
 
   if (!accessKey) {
     return res.json(error("Access Key not found"));
+  }
+
+  if (!role) {
+    return res.json(error("Role not found"));
   }
 
   if (!username) {
