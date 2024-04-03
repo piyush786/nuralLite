@@ -1,5 +1,4 @@
 const express = require('express');
-const UserMdl = require('../models/users');
 
 
 async function showWorking(req,res) {

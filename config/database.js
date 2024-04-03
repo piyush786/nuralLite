@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-exports.module = mongoose
-  .connect("mongodb://localhost/test")
-  .then(() => console.log("Connected!"))
-  .catch((e) => {
-    console.log(e);
-  });
+const mongoClient = require("mongodb").MongoClient
+const url = "mongodb://localhost:27017";
+module.exports = {
+  url,
+  mongoClient
+}
