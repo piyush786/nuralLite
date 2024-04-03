@@ -34,7 +34,7 @@ async function login(req, res) {
     return res.json(error("Invalid User name of password"));
   }
 
-  const token = jwt.sign({ username: user.username, role: role }, process.env.JWT_SECRET, { expiresIn: '24h' });
+  const token = jwt.sign({ username: user.username, role: role }, "Nural@123", { expiresIn: '24h' });
   await users.updateOne({ username: username, accessKey: accessKey, }, { $set: { token: token } });
   return res.status(200).send(success({token}, "Successfully Created"));
   
