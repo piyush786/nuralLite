@@ -80,11 +80,11 @@ async function forgetPassword(req, res) {
 
   // Validate input
   if (!accessKey) {
-    return res.json({ success: false, message: 'Access Key is required' });
+    return res.json(error("Access Key is required"));
   }
 
   if (!username) {
-    return res.json({ success: false, message: 'Username is required' });
+    return res.json(error("Username is required"));
   }
 
 
@@ -103,7 +103,7 @@ async function forgetPassword(req, res) {
   // Save the OTP and reference number in the database
   const referenceNumber = crypto.randomBytes(16).toString('hex');
   await users.updateOne({ _id: user._id }, { $set: { otp, referenceNumber } });
-  return res.json({ success: true, message: 'OTP sent to your email', referenceNumber });
+  return res.json(success({ referenceNumber }, 'OTP sent to your email'));
 
 }
 
@@ -115,11 +115,11 @@ async function verifyOTP(req, res) {
   const { refNumber, otp } = req.body;
 
   if (!refNumber) {
-    return res.json({ success: false, message: 'Reference number is required' });
+    return res.json(error("Reference number is required"));
   }
 
   if (!otp) {
-    return res.json({ success: false, message: 'OTP is required' });
+    return res.json(error("OTP is required"));
   }
 
   // Find the user based on the reference number and verify the OTP
@@ -130,7 +130,7 @@ async function verifyOTP(req, res) {
   const user = await users.findOne({ referenceNumber: refNumber, otp: otp });
 
   if (!user) {
-    return res.json({ success: false, message: 'Invalid OTP' });
+    return res.json(error("Invalid OTP"));
   }
 
   // Generate a verification token for resetting the password
@@ -139,7 +139,7 @@ async function verifyOTP(req, res) {
   // Save the verification token in the database
   await users.updateOne({ _id: user._id }, { $set: { verificationToken } });
 
-  return res.json({ success: true, message: 'Verification token generated successfully', verificationToken });
+  return res.json(success({ verificationToken }, 'Verification token generated successfully'));
 }
 
 
@@ -148,11 +148,11 @@ async function resetPassword(req, res) {
   const { verificationToken, newPassword } = req.body;
 
   if (!verificationToken) {
-    return res.json({ success: false, message: 'Verification token is required' });
+    return res.json(error("Verification token is required"));
   }
 
   if (!newPassword) {
-    return res.json({ success: false, message: 'New password is required' });
+    return res.json(error("New password is required"));
   }
 
   // Find the user based on the verification token
@@ -163,7 +163,7 @@ async function resetPassword(req, res) {
   const user = await users.findOne({ verificationToken });
 
   if (!user) {
-    return res.json({ success: false, message: 'Invalid verification token' });
+    return res.json(error("Invalid verification token"));
   }
 
   // Hash the new password
@@ -172,8 +172,10 @@ async function resetPassword(req, res) {
   // Update the user's password and remove the verification token
   await users.updateOne({ _id: user._id }, { $set: { password: hashedPassword }, $unset: { verificationToken: '' } });
 
-  return res.json({ success: true, message: 'Password reset successfully' });
+  return res.json(success({}, 'Password reset successfully'));
 }
+
+
 
 module.exports = {
   login,

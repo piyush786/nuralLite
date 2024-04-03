@@ -11,7 +11,7 @@ const districtCtrl = require("./controllers/district");
 const cityCtrl = require("./controllers/city");
 const localityCtrl = require("./controllers/locality");
 const userCtrl = require("./controllers/users");
-
+const orgCtrl = require("./controllers/organization")
 // routes
 router.get("/", homeCtrl.showWorking);
 
@@ -52,13 +52,17 @@ router.post("/locality/delete", localityCtrl.delete);
 
 
 router.post("/login", userCtrl.login);
-router.post("/logout", userCtrl.logout);
 router.post("/change-password", userCtrl.changePassword);
 router.post("/forget-password", userCtrl.forgetPassword);
 router.post("/forget-password-otp", userCtrl.forgetPasswordOtp);
 router.post("/forget-password-change", userCtrl.forgetPasswordChange);
 
 
+router.post("/organization", orgCtrl.addOrganization);
+router.post("/organization/delete/:id", orgCtrl.deleteOrganization);
+router.post("/organization/delete/:id", orgCtrl.editOrganization);
+router.get("/organizations", orgCtrl.listOrganizations);
+router.get("/organization/:id", orgCtrl.getOrganization);
 
 
 module.exports = router;
