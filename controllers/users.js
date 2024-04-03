@@ -32,7 +32,7 @@ async function login(req, res) {
 
   const token = jwt.sign({ username: user.username, role: role }, process.env.JWT_SECRET, { expiresIn: '24h' });
   await users.updateOne({ username: username, accessKey: accessKey, }, { $set: { token: token } });
-  res.status(200).send(success({token}, "Successfully Created"));
+  return res.status(200).send(success({token}, "Successfully Created"));
   
 }
 
