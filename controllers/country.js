@@ -18,7 +18,7 @@ async function getCountry(req, res) {
 }
 
 async function addCountry(req, res) {
-  const { displayOrder, countryCode, countryName, remarks, currency } =
+  const { displayOrder, countryCode, countryName, remarks, currency, active } =
     req.body;
 
   if (!displayOrder) {
@@ -42,6 +42,10 @@ async function addCountry(req, res) {
     return;
   }
 
+  if (!active) {
+    active = true;
+  }
+
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLite");
   const counteries = db.collection("counteries");
@@ -56,6 +60,7 @@ async function addCountry(req, res) {
       countryName,
       remarks,
       currency,
+      active,
       id: cid,
     });
     res.status(200).send(success(result, "Successfully Created"));
