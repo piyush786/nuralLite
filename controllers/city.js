@@ -6,7 +6,7 @@ const { mongoClient, url } = require("../config/database");
 async function getCity(req, res) {
   
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const cities = db.collection("cities");
   const cityList = await cities.find().toArray();
   res.status(200).send(success(cityList, "Successfully fetched"));
@@ -28,7 +28,7 @@ async function addCity(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const districts = db.collection("districts");
   const cities = db.collection("cities");
 
@@ -74,7 +74,7 @@ async function updateCity(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const districts = db.collection("districts");
   const cities = db.collection("cities");
 
@@ -106,7 +106,7 @@ async function deleteCity(req, res) {
     return res.json(error("Disctrict Id not found"));
   }
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const cities = db.collection("cities");
 
   try {

@@ -30,7 +30,7 @@ async function addOrganization(req, res) {
   const access_key = Math.floor(100000 + Math.random() * 900000);
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
 
   const organization = {
@@ -52,7 +52,7 @@ async function addOrganization(req, res) {
 
 async function listOrganizations(req, res) {
   const client = await mongoClient.connect(url, { useUnifiedTopology: true });
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
 
   try {
@@ -73,7 +73,7 @@ async function deleteOrganization(req, res) {
     }
   
     const client = await mongoClient.connect(url);
-    const db = client.db("nuralLite");
+    const db = client.db("nuraltechLite");
     const users = db.collection("users");
   
     try {
@@ -104,7 +104,7 @@ async function deleteOrganization(req, res) {
     }
   
     const client = await mongoClient.connect(url);
-    const db = client.db("nuralLite");
+    const db = client.db("nuraltechLite");
     const users = db.collection("users");
   
     try {
@@ -135,7 +135,7 @@ async function deleteOrganization(req, res) {
     }
   
     const client = await mongoClient.connect(url);
-    const db = client.db("nuralLite");
+    const db = client.db("nuraltechLite");
     const users = db.collection("users");
   
     try {

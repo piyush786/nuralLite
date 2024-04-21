@@ -6,7 +6,7 @@ const { mongoClient, url } = require("../config/database");
 async function getRegion(req, res) {
   
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const districts = db.collection("districts");
   const districtList = await districts.find().toArray();
   res.status(200).send(success(districtList, "Successfully fetched"));
@@ -28,7 +28,7 @@ async function addRegion(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const regions = db.collection("regions");
   const districts = db.collection("districts");
 
@@ -74,7 +74,7 @@ async function updateRegion(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const regions = db.collection("regions");
   const districts = db.collection("districts");
 
@@ -106,7 +106,7 @@ async function deleteRegion(req, res) {
     return res.json(error("Region Id not found"));
   }
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const regions = db.collection("regions");
   const districts = db.collection("districts");
 

@@ -25,7 +25,7 @@ async function login(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
 
 
@@ -56,7 +56,7 @@ async function changePassword(req, res) {
   // Check if the old password matches the user's current password in the database
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
   const user = await users.findOne({ token });
   if (!user) {
@@ -95,7 +95,7 @@ async function forgetPassword(req, res) {
   // Check if the old password matches the user's current password in the database
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
   const user = await users.findOne({ username: username, accessKey: accessKey });
   if (!user) {
@@ -129,7 +129,7 @@ async function verifyOTP(req, res) {
   // Find the user based on the reference number and verify the OTP
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
   const user = await users.findOne({ referenceNumber: refNumber, otp: otp });
 
@@ -162,7 +162,7 @@ async function resetPassword(req, res) {
   // Find the user based on the verification token
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuralLite");
+  const db = client.db("nuraltechLite");
   const users = db.collection("users");
   const user = await users.findOne({ verificationToken });
 
