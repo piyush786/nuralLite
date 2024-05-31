@@ -18,7 +18,7 @@ async function getCountry(req, res) {
 }
 
 async function addCountry(req, res) {
-  const { displayOrder, countryCode, countryName, remarks, currency, active } =
+  let { displayOrder, countryCode, countryName, remarks, currency, active } =
     req.body;
 
   if (!displayOrder) {
@@ -37,14 +37,6 @@ async function addCountry(req, res) {
     return res.json(error("Currency not found"));
   }
 
-  if (useMock) {
-    res.status(200).send(success({}, "Successfully Created"));
-    return;
-  }
-
-  if (!active) {
-    active = true;
-  }
 
   const client = await mongoClient.connect(url);
   const db = client.db("nuraltechLite");
