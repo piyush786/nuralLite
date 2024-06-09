@@ -12,6 +12,9 @@ const cityCtrl = require("./controllers/city");
 const localityCtrl = require("./controllers/locality");
 const userCtrl = require("./controllers/users");
 const orgCtrl = require("./controllers/organization")
+const customerCtrl = require("./controllers/customer")
+
+
 // routes
 router.get("/", homeCtrl.showWorking);
 
@@ -60,9 +63,16 @@ router.post("/forget-password-change", userCtrl.forgetPasswordChange);
 
 router.post("/organization", orgCtrl.addOrganization);
 router.post("/organization/delete/:id", orgCtrl.deleteOrganization);
-router.post("/organization/delete/:id", orgCtrl.editOrganization);
+router.post("/organization/:id", orgCtrl.editOrganization);
 router.get("/organizations", orgCtrl.listOrganizations);
 router.get("/organization/:id", orgCtrl.getOrganization);
+
+
+router.post("/customer", customerCtrl.addCustomer);
+router.post("/customer/delete/:id", customerCtrl.deleteCustomer);
+router.post("/customer/:id", customerCtrl.editCustomer);
+router.get("/customers", customerCtrl.listCustomers);
+router.get("/customer/:id", customerCtrl.getCustomer);
 
 
 module.exports = router;

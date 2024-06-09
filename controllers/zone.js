@@ -5,7 +5,7 @@ const { mongoClient, url } = require("../config/database");
 
 async function getZone(req, res) {
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const zones = db.collection("zones");
   const zoneList = await zones.find().toArray();
   res.status(200).send(success(zoneList, "Successfully fetched"));
@@ -27,7 +27,7 @@ async function addZone(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
   const zones = db.collection("zones");
 
@@ -74,7 +74,7 @@ async function updateZone(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
   const zones = db.collection("zones");
 
@@ -106,7 +106,7 @@ async function deleteZone(req, res) {
     return res.json(error("Zone Id not found"));
   }
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const zones = db.collection("zones");
 
   try {
