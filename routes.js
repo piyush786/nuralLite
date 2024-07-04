@@ -13,7 +13,7 @@ const localityCtrl = require("./controllers/locality");
 const userCtrl = require("./controllers/users");
 const orgCtrl = require("./controllers/organization")
 const customerCtrl = require("./controllers/customer")
-
+const productCtrl = require("./controllers/product")
 
 // routes
 router.get("/", homeCtrl.showWorking);
@@ -73,6 +73,13 @@ router.post("/customer/delete/:id", customerCtrl.deleteCustomer);
 router.post("/customer/:id", customerCtrl.editCustomer);
 router.get("/customers", customerCtrl.listCustomers);
 router.get("/customer/:id", customerCtrl.getCustomer);
+
+
+router.post("/product", productCtrl.addProduct);
+router.post("/product/delete/:id", productCtrl.deleteProduct);
+router.post("/product/:id", productCtrl.editProduct);
+router.get("/products", productCtrl.listProducts);
+router.get("/products/customer", productCtrl.listProductByCustomer);
 
 
 module.exports = router;
