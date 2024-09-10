@@ -4,20 +4,20 @@ const { error, success } = require("../utils/jsend");
 
 async function addOrganization(req, res) {
   const {
-    organization_name,
-    mobile_number,
+    organizationName,
+    mobileNumber,
     email,
-    alternative_mob_number,
-    subscription_type,
-    subscription_start_date,
+    alternativeMobNumber,
+    subscriptionType,
+    subscriptionStartDate,
     password
   } = req.body;
 
-  if (!organization_name || !mobile_number || !email || !subscription_type || !subscription_start_date || !password) {
+  if (!organizationName || !mobileNumber || !email || !subscriptionType || !subscriptionStartDate || !password) {
     return res.status(400).json(error("All fields are required"));
   }
 
-  if (subscription_type !== 'trial' && subscription_type !== 'subscription') {
+  if (subscriptionType !== 'trial' && subscriptionType !== 'subscription') {
     return res.status(400).json(error("Invalid subscription type"));
   }
 
@@ -27,39 +27,51 @@ async function addOrganization(req, res) {
     return res.status(400).json(error("Invalid email format"));
   }
 
-  const access_key = Math.floor(100000 + Math.random() * 900000);
+  const accessKey = Math.floor(100000 + Math.random() * 900000).toString();
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const users = db.collection("users");
 
+  let checkOrg = await users.find({
+    email , role : "organization"
+  })
+
+
+  if(checkOrg?.length>0) {
+    return res.status(400).json(error("Organization already exist"));
+  }
+
+
   const organization = {
-    organization_name,
-    mobile_number,
+    organizationName,
+    mobileNumber,
     email,
-    alternative_mob_number,
-    subscription_type,
-    subscription_start_date,
-    access_key,
+    username: email,
+    alternativeMobNumber,
+    subscriptionType,
+    subscriptionStartDate,
+    accessKey,
     password,
     role: "organization"
   };
   const result = await users.insertOne(organization);
   client.close();
-
-  res.status(201).json(success({ organization: result.ops[0] }, 'Organization added successfully'));
+  return  res.status(201).json(success({ organization: result.insertedId, accessKey }, 'Organization added successfully'));
 }
+
+
 
 async function listOrganizations(req, res) {
   const client = await mongoClient.connect(url, { useUnifiedTopology: true });
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const users = db.collection("users");
 
   try {
     const organizations = await users.find({ role: "organization" }).toArray();
-    res.status(200).json(success({ organizations }, 'Organizations retrieved successfully'));
-  } catch (error) {
-    res.status(500).json(error("Failed to fetch organizations"));
+    return  res.status(200).json(success({ organizations }, 'Organizations retrieved successfully'));
+  } catch (errorEx) {
+    return  res.status(500).json(error("Failed to fetch organizations"));
   } finally {
     client.close();
   }
@@ -73,7 +85,7 @@ async function deleteOrganization(req, res) {
     }
   
     const client = await mongoClient.connect(url);
-    const db = client.db("nuraltechLite");
+    const db = client.db("nuralLiteDb");
     const users = db.collection("users");
   
     try {
@@ -82,9 +94,9 @@ async function deleteOrganization(req, res) {
         return res.status(404).json(error("Organization not found"));
       }
   
-      res.status(200).json(success({ organization: deletedOrganization.value }, "Organization deleted successfully"));
-    } catch (error) {
-      res.status(500).json(error("Failed to delete organization"));
+      return res.status(200).json(success({ organization: deletedOrganization.value }, "Organization deleted successfully"));
+    } catch (errorEx) {
+      return res.status(500).json(error("Failed to delete organization"));
     } finally {
       client.close();
     }
@@ -104,7 +116,7 @@ async function deleteOrganization(req, res) {
     }
   
     const client = await mongoClient.connect(url);
-    const db = client.db("nuraltechLite");
+    const db = client.db("nuralLiteDb");
     const users = db.collection("users");
   
     try {
@@ -118,9 +130,9 @@ async function deleteOrganization(req, res) {
         return res.status(404).json(error("Organization not found"));
       }
   
-      res.status(200).json(success({ organization: updatedOrganization.value }, "Organization updated successfully"));
-    } catch (error) {
-      res.status(500).json(error("Failed to update organization"));
+      return  res.status(200).json(success({ organization: updatedOrganization.value }, "Organization updated successfully"));
+    } catch (errorEx) {
+      return  res.status(500).json(error("Failed to update organization"));
     } finally {
       client.close();
     }
@@ -135,7 +147,7 @@ async function deleteOrganization(req, res) {
     }
   
     const client = await mongoClient.connect(url);
-    const db = client.db("nuraltechLite");
+    const db = client.db("nuralLiteDb");
     const users = db.collection("users");
   
     try {
@@ -145,9 +157,9 @@ async function deleteOrganization(req, res) {
         return res.status(404).json(error("Organization not found"));
       }
   
-      res.status(200).json(success({ organization }, "Organization details retrieved successfully"));
-    } catch (error) {
-      res.status(500).json(error("Failed to fetch organization details"));
+      return  res.status(200).json(success({ organization }, "Organization details retrieved successfully"));
+    } catch (errorEx) {
+      return  res.status(500).json(error("Failed to fetch organization details"));
     } finally {
       client.close();
     }

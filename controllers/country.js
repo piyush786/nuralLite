@@ -11,7 +11,7 @@ async function getCountry(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
   const countryList = await counteries.find().toArray();
   res.status(200).send(success(countryList, "Successfully fetched"));
@@ -39,7 +39,7 @@ async function addCountry(req, res) {
 
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
   const cid = Math.floor(Math.random() * 10000000);
 
@@ -91,7 +91,7 @@ async function updateCountry(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
 
   try {
@@ -121,7 +121,7 @@ async function deleteCountry(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
 
   try {

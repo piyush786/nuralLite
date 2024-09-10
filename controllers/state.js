@@ -6,7 +6,7 @@ const { mongoClient, url } = require("../config/database");
 async function getState(req, res) {
   
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const states = db.collection("states");
   const stateList = await states.find().toArray();
   res.status(200).send(success(stateList, "Successfully fetched"));
@@ -28,7 +28,7 @@ async function addState(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const zones = db.collection("zones");
   const states = db.collection("states");
 
@@ -74,7 +74,7 @@ async function updateState(req, res) {
   }
 
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const zones = db.collection("zones");
   const states = db.collection("states");
 
@@ -106,7 +106,7 @@ async function deleteState(req, res) {
     return res.json(error("State Id not found"));
   }
   const client = await mongoClient.connect(url);
-  const db = client.db("nuraltechLite");
+  const db = client.db("nuralLiteDb");
   const states = db.collection("states");
 
   try {
