@@ -13,14 +13,14 @@ async function getCity(req, res) {
 }
 
 async function addCity(req, res) {
-  const { displayOrder, districtId, cityName, remarks } = req.body;
+  const { displayOrder, stateId, cityName, remarks } = req.body;
 
   if (!displayOrder) {
     return res.json(error("Display order not found"));
   }
 
-  if (!districtId) {
-    return res.json(error("Disctrict id not found"));
+  if (!stateId) {
+    return res.json(error("State id not found"));
   }
 
   if (!cityName) {
@@ -29,12 +29,12 @@ async function addCity(req, res) {
 
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
-  const districts = db.collection("districts");
+  const states = db.collection("states");
   const cities = db.collection("cities");
 
-  const district = await districts.findOne({ id: districtId });
-  if (district) {
-    return res.json(error("City not found"));
+  const state = await states.findOne({ id: stateId });
+  if (state) {
+    return res.json(error("State not found"));
   }
 
   const cid = Math.floor(Math.random() * 10000000);
@@ -43,7 +43,7 @@ async function addCity(req, res) {
   try {
     const result = await cities.insertOne({
       displayOrder,
-      districtId: Number(districtId),
+      stateId: Number(stateId),
       cityName,
       remarks,
       id: cid,
@@ -55,7 +55,7 @@ async function addCity(req, res) {
 }
 
 async function updateCity(req, res) {
-  const { id, displayOrder, districtId, cityName, remarks } = req.body;
+  const { id, displayOrder, stateId, cityName, remarks } = req.body;
 
   if (!id) {
     return res.json(error("City Id not found"));
@@ -65,8 +65,8 @@ async function updateCity(req, res) {
     return res.json(error("Display order not found"));
   }
 
-  if (!districtId) {
-    return res.json(error("Disctrict id not found"));
+  if (!stateId) {
+    return res.json(error("State id not found"));
   }
 
   if (!cityName) {
@@ -75,11 +75,11 @@ async function updateCity(req, res) {
 
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
-  const districts = db.collection("districts");
+  const states = db.collection("states");
   const cities = db.collection("cities");
 
-  const district = await districts.findOne({ id: districtId });
-  if (district) {
+  const state = await districts.findOne({ id: stateId });
+  if (state) {
     return res.json(error("Disctrict not found"));
   }
 
@@ -89,7 +89,7 @@ async function updateCity(req, res) {
       {
         $set: {
           displayOrder,
-          districtId,
+          stateId,
           cityName,
           remarks,
         },
@@ -103,7 +103,7 @@ async function updateCity(req, res) {
 async function deleteCity(req, res) {
   const { id } = req.body;
   if (!id) {
-    return res.json(error("Disctrict Id not found"));
+    return res.json(error("City Id not found"));
   }
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
