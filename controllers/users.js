@@ -47,7 +47,7 @@ async function login(req, res) {
 }
 
 async function changePassword(req, res) {
-  const { oldPassword, newPassword, token } = req.body;
+  const { oldPassword, newPassword } = req.body;
   // console.log("body is", req);
 
   const token = req.headers.authorization;

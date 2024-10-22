@@ -1,7 +1,6 @@
 const express = require("express");
 const { mongoClient, url } = require("../config/database");
 const { error, success } = require("../utils/jsend");
-const { ObjectId } = require("mongodb");
 
 async function addGeography(req, res) {
   const {
@@ -32,13 +31,8 @@ async function addGeography(req, res) {
 
   try {
 
-   let countryMaxOrder = await counteries.findOne({}, { sort: { displayOrder: -1 } });
-   let zoneMaxOrder = await zones.findOne({}, { sort: { displayOrder: -1 } });
-   let stateMaxOrder = await states.findOne({}, { sort: { displayOrder: -1 } });
-   let cityMaxOrder = await cities.findOne({}, { sort: { displayOrder: -1 } });
 
     const result1 = await counteries.insertOne({
-      displayOrder : countryMaxOrder.displayOrder+1,
       countryCode,
       countryName,
       currency,
@@ -47,26 +41,20 @@ async function addGeography(req, res) {
     });
 
     const result2 = await zones.insertOne({
-      displayOrder : zoneMaxOrder.displayOrder+1,
       countryId: Number(cid),
       zoneName,
-      remarks,
       id: zid,
     });
 
     const result3 = await states.insertOne({
-      displayOrder : stateMaxOrder.displayOrder+1,
       zoneId: Number(zid),
       stateName,
-      remarks,
       id: sid,
     });
 
     const result4 = await cities.insertOne({
-      displayOrder : cityMaxOrder.displayOrder+1,
       stateId: Number(sid),
       cityName,
-      remarks,
       id: ctid,
     });
 

@@ -13,11 +13,7 @@ async function getCity(req, res) {
 }
 
 async function addCity(req, res) {
-  const { displayOrder, stateId, cityName, remarks } = req.body;
-
-  if (!displayOrder) {
-    return res.json(error("Display order not found"));
-  }
+  const { stateId, cityName, remarks } = req.body;
 
   if (!stateId) {
     return res.json(error("State id not found"));
@@ -42,10 +38,8 @@ async function addCity(req, res) {
 
   try {
     const result = await cities.insertOne({
-      displayOrder,
       stateId: Number(stateId),
       cityName,
-      remarks,
       id: cid,
     });
     res.status(200).send(success(result, "Successfully Created"));
@@ -55,15 +49,12 @@ async function addCity(req, res) {
 }
 
 async function updateCity(req, res) {
-  const { id, displayOrder, stateId, cityName, remarks } = req.body;
+  const { id, stateId, cityName } = req.body;
 
   if (!id) {
     return res.json(error("City Id not found"));
   }
 
-  if (!displayOrder) {
-    return res.json(error("Display order not found"));
-  }
 
   if (!stateId) {
     return res.json(error("State id not found"));
@@ -78,9 +69,9 @@ async function updateCity(req, res) {
   const states = db.collection("states");
   const cities = db.collection("cities");
 
-  const state = await districts.findOne({ id: stateId });
+  const state = await states.findOne({ id: stateId });
   if (state) {
-    return res.json(error("Disctrict not found"));
+    return res.json(error("State not found"));
   }
 
   try {
@@ -88,10 +79,8 @@ async function updateCity(req, res) {
       { id: Number(id) },
       {
         $set: {
-          displayOrder,
           stateId,
           cityName,
-          remarks,
         },
       }
     );
