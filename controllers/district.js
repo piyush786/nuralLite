@@ -110,7 +110,7 @@ async function deleteRegion(req, res) {
   const regions = db.collection("regions");
   const districts = db.collection("districts");
 
-  const region = await regions.findOne({ id: regionId });
+  const region = await regions.findOne({ id: Number(id) });
   if (region) {
     return res.json(error("Region not found"));
   }

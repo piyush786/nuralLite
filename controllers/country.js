@@ -37,7 +37,6 @@ async function addCountry(req, res) {
     return res.json(error("Currency not found"));
   }
 
-
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
@@ -125,9 +124,7 @@ async function deleteCountry(req, res) {
   const counteries = db.collection("counteries");
 
   try {
-    const result = await counteries.findOneAndDelete(
-      { id: Number(id) }
-    );
+    const result = await counteries.findOneAndDelete({ id: Number(id) });
 
     if (result) {
       return res

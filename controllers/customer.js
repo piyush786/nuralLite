@@ -251,7 +251,7 @@ async function getCustomer(req, res) {
   const db = client.db("nuralLiteDb");
   const users = db.collection("users");
   const customers = db.collection("customers");
-
+  console.log(token)
   const orgDetails = await users.findOne({
     token: token,
     $or: [{ role: "organization" }, { role: "admin" }],
