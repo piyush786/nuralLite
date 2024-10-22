@@ -50,6 +50,12 @@ async function changePassword(req, res) {
   const { oldPassword, newPassword, token } = req.body;
   // console.log("body is", req);
 
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(400).json(error("token not found"));
+  }
+
+
   if (!oldPassword) {
     return res.json(error("Old password is required"));
   }
