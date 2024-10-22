@@ -1,8 +1,7 @@
-const express = require('express');
+const express = require("express");
 
-
-async function showWorking(req,res) {
-    res.json({'status':'server working'})
+async function showWorking(req, res) {
+  res.json({ status: "server working" });
 }
 
-exports.showWorking = showWorking ;
+exports.showWorking = showWorking;
