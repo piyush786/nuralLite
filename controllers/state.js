@@ -13,11 +13,7 @@ async function getState(req, res) {
 }
 
 async function addState(req, res) {
-  const { displayOrder, zoneId, stateName, remarks } = req.body;
-
-  if (!displayOrder) {
-    return res.json(error("Display order not found"));
-  }
+  const { zoneId, stateName } = req.body;
 
   if (!zoneId) {
     return res.json(error("Zone id not found"));
@@ -42,10 +38,8 @@ async function addState(req, res) {
 
   try {
     const result = await states.insertOne({
-      displayOrder,
       zoneId: Number(zoneId),
       stateName,
-      remarks,
       id: cid,
     });
     res.status(200).send(success(result, "Successfully Created"));
@@ -55,15 +49,12 @@ async function addState(req, res) {
 }
 
 async function updateState(req, res) {
-  const { id, displayOrder, zoneId, stateName, remarks } = req.body;
+  const { id, zoneId, stateName } = req.body;
 
   if (!id) {
     return res.json(error("State Id not found"));
   }
 
-  if (!displayOrder) {
-    return res.json(error("Display order not found"));
-  }
 
   if (!zoneId) {
     return res.json(error("Zone id not found"));
@@ -88,10 +79,8 @@ async function updateState(req, res) {
       { id: Number(id) },
       {
         $set: {
-          displayOrder,
           zoneId,
           stateName,
-          remarks,
         },
       }
     );

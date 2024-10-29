@@ -12,11 +12,7 @@ async function getZone(req, res) {
 }
 
 async function addZone(req, res) {
-  const { displayOrder, countryId, zoneName, remarks } = req.body;
-
-  if (!displayOrder) {
-    return res.json(error("Display order not found"));
-  }
+  const { countryId, zoneName } = req.body;
 
   if (!countryId) {
     return res.json(error("Country id not found"));
@@ -41,11 +37,9 @@ async function addZone(req, res) {
   console.log(cid);
 
   try {
-    const result = await zones.insertOne({
-      displayOrder,
+    const result = await zones.insertOne({ 
       countryId: Number(countryId),
       zoneName,
-      remarks,
       id: cid,
     });
     res.status(200).send(success(result, "Successfully Created"));
@@ -55,14 +49,10 @@ async function addZone(req, res) {
 }
 
 async function updateZone(req, res) {
-  const { id, displayOrder, countryId, zoneName, remarks } = req.body;
+  const { id, countryId, zoneName } = req.body;
 
   if (!id) {
     return res.json(error("Zone Id not found"));
-  }
-
-  if (!displayOrder) {
-    return res.json(error("Display order not found"));
   }
 
   if (!countryId) {
@@ -88,10 +78,8 @@ async function updateZone(req, res) {
       { id: Number(id) },
       {
         $set: {
-          displayOrder,
           countryId,
-          zoneName,
-          remarks,
+          zoneName
         },
       }
     );
