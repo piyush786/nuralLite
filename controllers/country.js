@@ -1,25 +1,50 @@
 const express = require("express");
-const { useMock } = require("../config/config.json");
-const { mockCounteries } = require("../config/mocks/counteries");
 const { error, success } = require("../utils/jsend");
 const { mongoClient, url } = require("../config/database");
 
 async function getCountry(req, res) {
-  if (useMock) {
-    res.status(200).send(mockCounteries);
-    return;
-  }
+  const { search = "", page, limit } = req.query;
 
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
-  const countryList = await counteries.find().toArray();
-  res.status(200).send(success(countryList, "Successfully fetched"));
+
+  // Search filter
+  const searchFilter = search
+    ? { countryName: { $regex: search, $options: "i" } } // Case-insensitive search on countryName
+    : {};
+
+  try {
+    // If page and limit are provided, apply pagination, otherwise fetch all
+    let countryList;
+    let totalCountries;
+
+    if (page && limit) {
+      const options = {
+        skip: (page - 1) * parseInt(limit),
+        limit: parseInt(limit),
+      };
+      countryList = await counteries.find(searchFilter, options).toArray();
+      totalCountries = await counteries.countDocuments(searchFilter);
+    } else {
+      countryList = await counteries.find(searchFilter).toArray();
+      totalCountries = countryList.length;
+    }
+
+    res.status(200).send(
+      success(
+        { countries: countryList, totalCountries },
+        "Successfully fetched"
+      )
+    );
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(error(null, "Internal Server Error"));
+  }
 }
 
 async function addCountry(req, res) {
-  let { countryCode, countryName, currency, active } =
-    req.body;
+  const { countryCode, countryName, active } = req.body;
 
   if (!countryCode) {
     return res.json(error("Country code not found"));
@@ -27,10 +52,6 @@ async function addCountry(req, res) {
 
   if (!countryName) {
     return res.json(error("Country name not found"));
-  }
-
-  if (!currency) {
-    return res.json(error("Currency not found"));
   }
 
   const client = await mongoClient.connect(url);
@@ -42,19 +63,18 @@ async function addCountry(req, res) {
     const result = await counteries.insertOne({
       countryCode,
       countryName,
-      currency,
       active,
       id: cid,
     });
     res.status(200).send(success(result, "Successfully Created"));
   } catch (e) {
     console.log(e);
+    res.status(500).send(error(null, "Internal Server Error"));
   }
 }
 
 async function updateCountry(req, res) {
-  const { countryCode, countryName, currency, id } =
-    req.body;
+  const { countryCode, countryName, id } = req.body;
 
   if (!id) {
     return res.json(error("Country Id not found"));
@@ -68,15 +88,6 @@ async function updateCountry(req, res) {
     return res.json(error("Country name not found"));
   }
 
-  if (!currency) {
-    return res.json(error("Currency not found"));
-  }
-
-  if (useMock) {
-    res.status(200).send(success({}, "Successfully Updated"));
-    return;
-  }
-
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
   const counteries = db.collection("counteries");
@@ -84,10 +95,11 @@ async function updateCountry(req, res) {
   try {
     const result = await counteries.findOneAndUpdate(
       { id: Number(id) },
-      { $set: { countryCode, countryName, currency } }
+      { $set: { countryCode, countryName } },
+      { returnDocument: "after" }
     );
 
-    if (result) {
+    if (result.value) {
       return res
         .status(200)
         .send(success(result.value, "Successfully Updated"));
@@ -96,16 +108,12 @@ async function updateCountry(req, res) {
     }
   } catch (e) {
     console.log(e);
+    res.status(500).send(error(null, "Internal Server Error"));
   }
 }
 
 async function deleteCountry(req, res) {
   const { id } = req.body;
-
-  if (useMock) {
-    res.status(200).send(success({}, "Successfully Deleted"));
-    return;
-  }
 
   const client = await mongoClient.connect(url);
   const db = client.db("nuralLiteDb");
@@ -114,7 +122,7 @@ async function deleteCountry(req, res) {
   try {
     const result = await counteries.findOneAndDelete({ id: Number(id) });
 
-    if (result) {
+    if (result.value) {
       return res
         .status(200)
         .send(success(result.value, "Successfully Deleted"));
@@ -123,6 +131,49 @@ async function deleteCountry(req, res) {
     }
   } catch (e) {
     console.log(e);
+    res.status(500).send(error(null, "Internal Server Error"));
+  }
+}
+
+async function toggleCountryStatus(req, res) {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.json(error("Country Id not found"));
+  }
+
+  const client = await mongoClient.connect(url);
+  const db = client.db("nuralLiteDb");
+  const counteries = db.collection("counteries");
+
+  try {
+    // Find the country document
+    const country = await counteries.findOne({ id: Number(id) });
+
+    if (!country) {
+      return res.status(404).send(error(null, "Document not found"));
+    }
+
+    // Toggle the active status
+    const updatedStatus = !country.active;
+
+    // Update the document with the new status
+    const result = await counteries.findOneAndUpdate(
+      { id: Number(id) },
+      { $set: { active: updatedStatus } },
+      { returnDocument: "after" }
+    );
+
+    if (result.value) {
+      return res
+        .status(200)
+        .send(success(result.value, "Successfully Toggled Status"));
+    } else {
+      return res.status(404).send(error(null, "Document not found"));
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(error(null, "Internal Server Error"));
   }
 }
 
@@ -130,3 +181,4 @@ exports.get = getCountry;
 exports.add = addCountry;
 exports.update = updateCountry;
 exports.delete = deleteCountry;
+exports.toggleStatus = toggleCountryStatus;

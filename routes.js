@@ -9,11 +9,19 @@ const stateCtrl = require("./controllers/state");
 const geographyCtrl = require("./controllers/geography");
 const cityCtrl = require("./controllers/city");
 const userCtrl = require("./controllers/users");
-const orgCtrl = require("./controllers/organization");
-const customerCtrl = require("./controllers/customer");
-const productCtrl = require("./controllers/product");
-const taxCtrl = require("./controllers/tax master/tax");
-const brandCtrl = require("./controllers/Product Master/brand");
+// <<<<<<< pan_arpit
+// const orgCtrl = require("./controllers/organization");
+// const customerCtrl = require("./controllers/customer");
+// const productCtrl = require("./controllers/product");
+// const taxCtrl = require("./controllers/tax master/tax");
+// const brandCtrl = require("./controllers/Product Master/brand");
+// =======
+const orgCtrl = require("./controllers/organization")
+const customerCtrl = require("./controllers/customer")
+const productCtrl = require("./controllers/product")
+const categoryCtrl = require("./controllers/category")
+
+// >>>>>>> main
 
 // routes
 router.get("/", homeCtrl.showWorking);
@@ -23,21 +31,26 @@ router.get("/countries", countryCtrl.get);
 router.post("/country", countryCtrl.add);
 router.put("/country", countryCtrl.update);
 router.post("/country/delete", countryCtrl.delete);
+router.post("/country/toggle", countryCtrl.toggleStatus)
 
 router.get("/zones", zoneCtrl.get);
 router.post("/zone", zoneCtrl.add);
 router.put("/zone", zoneCtrl.update);
 router.post("/zone/delete", zoneCtrl.delete);
+router.post("/zone/toggle", zoneCtrl.toggleStatus)
+
 
 router.get("/states", stateCtrl.get);
 router.post("/state", stateCtrl.add);
 router.put("/state", stateCtrl.update);
 router.post("/state/delete", stateCtrl.delete);
+router.post("/state/toggle", stateCtrl.toggleStatus)
 
 router.get("/cities", cityCtrl.get);
 router.post("/city", cityCtrl.add);
 router.put("/city", cityCtrl.update);
 router.post("/city/delete", cityCtrl.delete);
+router.post("/city/toggle", cityCtrl.toggleStatus)
 
 router.post("/login", userCtrl.login);
 router.post("/change-password", userCtrl.changePassword);
@@ -70,8 +83,25 @@ router.post("/taxes", taxCtrl.filterTaxes);
 router.put("/tax-update", taxCtrl.updateTax);
 router.get("/hsncode", taxCtrl.hsnCodeDropdown);
 
+
 // router.get("/brand", brandCtrl.createBrand);
 router.post("/brand", brandCtrl.createBrand);
 router.get("/brand-list", brandCtrl.brandList);
+
+
+router.get("/categories", categoryCtrl.get);
+router.post("/category", categoryCtrl.add);
+router.put("/category", categoryCtrl.update);
+router.post("/category/delete", categoryCtrl.delete);
+router.post("/category/toggle", categoryCtrl.toggleStatus)
+
+router.get("/sub-categories", categoryCtrl.get);
+router.post("/sub-category", categoryCtrl.add);
+router.put("/sub-category", categoryCtrl.update);
+router.post("/sub-category/delete", categoryCtrl.delete);
+router.post("/sub-category/toggle", categoryCtrl.toggleStatus)
+
+
+
 
 module.exports = router;
