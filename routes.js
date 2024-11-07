@@ -9,11 +9,19 @@ const stateCtrl = require("./controllers/state");
 const geographyCtrl = require("./controllers/geography");
 const cityCtrl = require("./controllers/city");
 const userCtrl = require("./controllers/users");
+// <<<<<<< pan_arpit
+// const orgCtrl = require("./controllers/organization");
+// const customerCtrl = require("./controllers/customer");
+// const productCtrl = require("./controllers/product");
+// const taxCtrl = require("./controllers/tax master/tax");
+// const brandCtrl = require("./controllers/Product Master/brand");
+// =======
 const orgCtrl = require("./controllers/organization")
 const customerCtrl = require("./controllers/customer")
 const productCtrl = require("./controllers/product")
 const categoryCtrl = require("./controllers/category")
 
+// >>>>>>> main
 
 // routes
 router.get("/", homeCtrl.showWorking);
@@ -68,6 +76,17 @@ router.post("/product/:id", productCtrl.editProduct);
 router.get("/products", productCtrl.listProducts);
 router.get("/products/customer", productCtrl.listProductByCustomer);
 
+router.post("/tax", taxCtrl.createTax);
+router.get("/taxes", taxCtrl.getTaxes);
+router.post("/tax-status", taxCtrl.toggleStatus);
+router.post("/taxes", taxCtrl.filterTaxes);
+router.put("/tax-update", taxCtrl.updateTax);
+router.get("/hsncode", taxCtrl.hsnCodeDropdown);
+
+
+// router.get("/brand", brandCtrl.createBrand);
+router.post("/brand", brandCtrl.createBrand);
+router.get("/brand-list", brandCtrl.brandList);
 
 
 router.get("/categories", categoryCtrl.get);
@@ -81,6 +100,7 @@ router.post("/sub-category", categoryCtrl.add);
 router.put("/sub-category", categoryCtrl.update);
 router.post("/sub-category/delete", categoryCtrl.delete);
 router.post("/sub-category/toggle", categoryCtrl.toggleStatus)
+
 
 
 

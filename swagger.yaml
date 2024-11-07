@@ -3,7 +3,6 @@ info:
   title: Nural lite
   description: Nural lite backend services
   version: 0.0.1
-  
+
 servers:
   - url: http://localhost:8090/api/v1
-
