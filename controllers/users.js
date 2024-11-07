@@ -41,7 +41,7 @@ async function login(req, res) {
   );
   await users.updateOne(
     { username: username, accessKey: accessKey },
-    { $set: { token: token } }
+    { $set: { token: token, accessKey: accessKey } }
   );
   return res.status(200).send(success({ token }, "Successfully Created"));
 }
@@ -54,7 +54,6 @@ async function changePassword(req, res) {
   if (!token) {
     return res.status(400).json(error("token not found"));
   }
-
 
   if (!oldPassword) {
     return res.json(error("Old password is required"));
@@ -88,7 +87,7 @@ async function changePassword(req, res) {
 
   // Hash the new password before updating it in the database
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-  console.log(hashedPassword)
+  console.log(hashedPassword);
 
   // Update the user's password in the database
   const username = user.username;
@@ -100,37 +99,95 @@ async function changePassword(req, res) {
   res.status(200).json(success({}, "Password changed successfully"));
 }
 
+// async function forgetPassword(req, res) {
+//   const { accessKey, username } = req.body;
+
+//   // Validate input
+//   if (!accessKey) {
+//     return res.json(error("Access Key is required"));
+//   }
+
+//   if (!username) {
+//     return res.json(error("Username is required"));
+//   }
+
+//   // Check if the old password matches the user's current password in the database
+
+//   const client = await mongoClient.connect(url);
+//   const db = client.db("nuralLiteDb");
+//   const users = db.collection("users");
+//   const user = await users.findOne({
+//     username: username,
+//     accessKey: accessKey,
+//   });
+//   if (!user) {
+//     return res.json(error("User not found"));
+//   }
+
+//   const otp = Math.floor(100000 + Math.random() * 900000);
+
+//   // Save the OTP and reference number in the database
+//   const referenceNumber = crypto.randomBytes(16).toString("hex");
+//   await users.updateOne({ _id: user._id }, { $set: { otp, referenceNumber } });
+//   return res.json(success({ referenceNumber }, "OTP sent to your email"));
+// }
+
 async function forgetPassword(req, res) {
-  const { accessKey, username } = req.body;
+  const { username, email } = req.body;
 
   // Validate input
-  if (!accessKey) {
-    return res.json(error("Access Key is required"));
+  if (!username && !email) {
+    return res.status(400).json(error("Either Username or Email is required"));
   }
 
-  if (!username) {
-    return res.json(error("Username is required"));
+  let client;
+  try {
+    client = await mongoClient.connect(url);
+    const db = client.db("nuralLiteDb");
+    const users = db.collection("users");
+
+    const query = {};
+    if (username) {
+      query.username = username;
+    }
+    if (email) {
+      query.email = email;
+    }
+
+    // Find user by either username or email
+    const user = await users.findOne(query);
+
+    if (!user) {
+      return res.status(404).json(error("User not found"));
+    }
+
+    // Configure Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: "Gmail", // Replace with your email service provider
+      auth: {
+        user: "your-email@gmail.com", // Your email
+        pass: "your-email-password", // Your email password or app password
+      },
+    });
+
+    // Send password to the user's email
+    const mailOptions = {
+      from: "your-email@gmail.com",
+      to: user.email,
+      subject: "Your Password",
+      text: `Hello ${user.username},\n\nYour password is: ${user.password}\n\nPlease change it after logging in.`,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json(success(null, "Password sent to your email"));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json(error("Failed to send password"));
+  } finally {
+    if (client) client.close();
   }
-
-  // Check if the old password matches the user's current password in the database
-
-  const client = await mongoClient.connect(url);
-  const db = client.db("nuralLiteDb");
-  const users = db.collection("users");
-  const user = await users.findOne({
-    username: username,
-    accessKey: accessKey,
-  });
-  if (!user) {
-    return res.json(error("User not found"));
-  }
-
-  const otp = Math.floor(100000 + Math.random() * 900000);
-
-  // Save the OTP and reference number in the database
-  const referenceNumber = crypto.randomBytes(16).toString("hex");
-  await users.updateOne({ _id: user._id }, { $set: { otp, referenceNumber } });
-  return res.json(success({ referenceNumber }, "OTP sent to your email"));
 }
 
 async function verifyOTP(req, res) {

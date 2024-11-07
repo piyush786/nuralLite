@@ -243,7 +243,7 @@ async function listProductByCustomer(req, res) {
   if (orgDetails._id) {
     try {
       const customerList = await products
-        .find({ organizationId: orgDetails._id, customerId: customerId  })
+        .find({ organizationId: orgDetails._id, customerId: customerId })
         .toArray();
       res
         .status(200)
